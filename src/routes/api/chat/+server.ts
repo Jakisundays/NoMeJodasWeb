@@ -1,4 +1,4 @@
-import { json } from "@sveltejs/kit";
+import { fail, json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
 import { RAGChat, togetherai } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
@@ -96,6 +96,13 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // });
   } catch (error) {
     console.error("Chat error:", error);
-    return json({ mesage: "Internal server error", error }, { status: 500 });
+    return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    // return error;
+    // return json({ message: "Internal server error", error }, { status: 500 });
   }
 };
