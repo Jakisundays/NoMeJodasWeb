@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PUBLIC_BASE_URL } from "$env/static/public";
+  import { env } from "$env/dynamic/public";
   import { Button } from "$lib/components/ui/button";
   import { Input } from "$lib/components/ui/input";
   import {
@@ -186,19 +186,22 @@
       <div class="flex items-center justify-between p-4">
         <div class="flex items-center gap-3">
           <div class="relative">
-            <div class="h-12 w-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+            <div
+              class="h-12 w-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg"
+            >
               <Scale class="h-6 w-6 text-white" />
             </div>
             <Heart class="h-4 w-4 text-red-500 absolute -top-1 -right-1" />
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-amber-700">¡Hola! Soy Guillermo</h1>
+            <h1 class="text-2xl font-bold text-amber-700">
+              ¡Hola! Soy Guillermo
+            </h1>
             <p class="text-sm text-amber-600">
               Tu amigo que te ayuda con tus derechos 🇵🇦
             </p>
           </div>
         </div>
-        
       </div>
 
       <!-- Context Input -->
@@ -206,7 +209,9 @@
         <div class="px-4 pb-4">
           <Card>
             <CardHeader class="pb-3">
-              <CardTitle class="text-sm text-amber-700">📚 Enseñarle algo nuevo a Guillermo</CardTitle>
+              <CardTitle class="text-sm text-amber-700"
+                >📚 Enseñarle algo nuevo a Guillermo</CardTitle
+              >
             </CardHeader>
             <CardContent class="space-y-3">
               <Input
@@ -245,14 +250,18 @@
         <div bind:this={messagesContainer} class="p-4 space-y-4">
           {#if messages.length === 0}
             <div class="text-center py-12">
-              <div class="h-16 w-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <div
+                class="h-16 w-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+              >
                 <MessageCircle class="h-8 w-8 text-white" />
               </div>
-              <h3 class="text-xl font-bold text-amber-700 mb-2">¡Qué tal! 👋</h3>
+              <h3 class="text-xl font-bold text-amber-700 mb-2">
+                ¡Qué tal! 👋
+              </h3>
               <p class="text-amber-600 max-w-md mx-auto leading-relaxed">
-                Soy Guillermo, tu amigo panameño que te ayuda a entender tus derechos. 
-                Pregúntame lo que quieras sobre las leyes de nuestro país. 
-                ¡Hablemos como panas! 🇵🇦
+                Soy Guillermo, tu amigo panameño que te ayuda a entender tus
+                derechos. Pregúntame lo que quieras sobre las leyes de nuestro
+                país. ¡Hablemos como panas! 🇵🇦
               </p>
             </div>
           {/if}
@@ -284,7 +293,14 @@
                     : "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 shadow-sm"}
                 >
                   <CardContent class="p-3">
-                    <p class="text-sm whitespace-pre-wrap {message.role === 'assistant' ? 'text-amber-800' : 'text-white'}">{message.content}</p>
+                    <p
+                      class="text-sm whitespace-pre-wrap {message.role ===
+                      'assistant'
+                        ? 'text-amber-800'
+                        : 'text-white'}"
+                    >
+                      {message.content}
+                    </p>
 
                     <!-- Mostrar contexto si existe -->
                     {#if message.context && message.context.length > 0}
@@ -300,7 +316,8 @@
                             <ChevronRight class="h-3 w-3" />
                           {/if}
                           <BookOpen class="h-3 w-3" />
-                           Ver de dónde saqué esta info ({message.context.length} fuentes)
+                          Ver de dónde saqué esta info ({message.context.length}
+                          fuentes)
                         </button>
 
                         {#if showContextDetails}
@@ -312,7 +329,7 @@
                                 </div>
                                 {#if ctx.metadata.articulo}
                                   <a
-                                    href={`${PUBLIC_BASE_URL}/constitucion/${ctx.metadata.articulo}`}
+                                    href={`${env.PUBLIC_BASE_URL}/constitucion/${ctx.metadata.articulo}`}
                                     target="_blank"
                                     class="text-amber-600 mb-1"
                                   >
@@ -340,7 +357,10 @@
                     {formatTime(message.timestamp)}
                   </Badge>
                   {#if message.context && message.context.length > 0}
-                    <Badge variant="outline" class="text-xs border-amber-300 text-amber-700">
+                    <Badge
+                      variant="outline"
+                      class="text-xs border-amber-300 text-amber-700"
+                    >
                       📚 {message.context.length} referencias
                     </Badge>
                   {/if}
@@ -370,10 +390,14 @@
                 </div>
               </div>
               <div class="flex flex-col max-w-[80%] items-start">
-                <Card class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+                <Card
+                  class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
+                >
                   <CardContent class="p-3">
                     <p class="text-sm whitespace-pre-wrap text-amber-800">
-                      {streamingContent}<span class="animate-pulse text-amber-500">|</span>
+                      {streamingContent}<span
+                        class="animate-pulse text-amber-500">|</span
+                      >
                     </p>
                   </CardContent>
                 </Card>
@@ -392,9 +416,13 @@
                 </div>
               </div>
               <div class="flex flex-col max-w-[80%] items-start">
-                <Card class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+                <Card
+                  class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
+                >
                   <CardContent class="p-3">
-                    <p class="text-sm text-amber-600">Déjame pensar un chin... 🤔</p>
+                    <p class="text-sm text-amber-600">
+                      Déjame pensar un chin... 🤔
+                    </p>
                   </CardContent>
                 </Card>
               </div>
