@@ -1,8 +1,19 @@
 import { json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
-import { RAGChat, togetherai } from "@upstash/rag-chat";
+import { RAGChat, togetherai, upstash } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
 import { env } from "$env/dynamic/private";
+import {
+  TOGETHER_AI_KEY,
+  UPSTASH_VECTOR_REST_TOKEN,
+  UPSTASH_VECTOR_REST_URL,
+} from "$env/static/private";
+
+console.log({
+  TOGETHER_AI_KEY,
+  UPSTASH_VECTOR_REST_TOKEN,
+  UPSTASH_VECTOR_REST_URL,
+});
 
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
