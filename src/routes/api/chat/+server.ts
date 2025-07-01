@@ -7,6 +7,7 @@ import { env } from "$env/dynamic/private";
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
     apiKey: env.TOGETHER_AI_KEY,
+    openAIApiKey: env.TOGETHER_AI_KEY,
   }),
   vector: new Index({
     token: env.UPSTASH_VECTOR_REST_TOKEN,
