@@ -2,23 +2,26 @@ import { json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
 import { RAGChat, togetherai } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
-import { env } from "$env/dynamic/private";
+import {
+  TOGETHER_AI_KEY,
+  UPSTASH_VECTOR_REST_TOKEN,
+  UPSTASH_VECTOR_REST_URL,
+} from "$env/static/private";
 
 console.log({
-  env,
-  TOGETHER_AI_KEY: env.TOGETHER_AI_KEY,
-  UPSTASH_VECTOR_REST_TOKEN: env.UPSTASH_VECTOR_REST_TOKEN,
-  UPSTASH_VECTOR_REST_URL: env.UPSTASH_VECTOR_REST_URL,
+  TOGETHER_AI_KEY: TOGETHER_AI_KEY,
+  UPSTASH_VECTOR_REST_TOKEN: UPSTASH_VECTOR_REST_TOKEN,
+  UPSTASH_VECTOR_REST_URL: UPSTASH_VECTOR_REST_URL,
 });
 
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
-    apiKey: env.TOGETHER_AI_KEY,
-    openAIApiKey: env.TOGETHER_AI_KEY,
+    apiKey: TOGETHER_AI_KEY,
+    openAIApiKey: TOGETHER_AI_KEY,
   }),
   vector: new Index({
-    token: env.UPSTASH_VECTOR_REST_TOKEN,
-    url: env.UPSTASH_VECTOR_REST_URL,
+    token: UPSTASH_VECTOR_REST_TOKEN,
+    url: UPSTASH_VECTOR_REST_URL,
   }),
   promptFn: ({ context, question, chatHistory }) =>
     `Eres Guillermo, un asistente legal panameño entrenado exclusivamente con la Constitución de la República de Panamá.
