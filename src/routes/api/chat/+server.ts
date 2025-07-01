@@ -1,10 +1,11 @@
 import { json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
-import { RAGChat, togetherai, upstash } from "@upstash/rag-chat";
+import { RAGChat, togetherai } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
 import { env } from "$env/dynamic/private";
 
 console.log({
+  env,
   TOGETHER_AI_KEY: env.TOGETHER_AI_KEY,
   UPSTASH_VECTOR_REST_TOKEN: env.UPSTASH_VECTOR_REST_TOKEN,
   UPSTASH_VECTOR_REST_URL: env.UPSTASH_VECTOR_REST_URL,
