@@ -1,4 +1,4 @@
-import { fail, json } from "@sveltejs/kit";
+import { json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
 import { RAGChat, togetherai } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
