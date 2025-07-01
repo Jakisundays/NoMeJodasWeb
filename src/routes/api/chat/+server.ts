@@ -51,16 +51,9 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   try {
     const { message } = await request.json();
 
-    // console.log({ message, ragChat: ragChat["config"]["model"] });
-
     if (!message) {
       return json({ error: "Message is required" }, { status: 400 });
     }
-
-    // Create RAGChat instance
-
-    // Initialize with some context
-    // await ragChat.context.add("Tokyo is the capital of Japan.");
 
     // Get response from RAG chat
     const response = await ragChat.chat(message, { topK: 3 });
@@ -70,40 +63,18 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // console.log({ context, output, metadata: context[0].metadata });
 
     return json({ message: output, context });
-
-    // // console.log({ context });
-
-    // // For now, return the complete response as a single chunk
-    // // In a real implementation, you might want to implement proper streaming
-    // const readableStream = new ReadableStream({
-    //   start(controller) {
-    //     try {
-    //       const data = JSON.stringify({ content: response.output }) + "\n";
-    //       controller.enqueue(new TextEncoder().encode(data));
-    //       controller.close();
-    //     } catch (error) {
-    //       controller.error(error);
-    //     }
-    //   },
-    // });
-
-    // return new Response(readableStream, {
-    //   headers: {
-    //     "Content-Type": "text/plain",
-    //     "Cache-Control": "no-cache",
-    //     Connection: "keep-alive",
-    //   },
-    // });
   } catch (error) {
     console.error("Chat error:", error);
-    return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
-      status: 500,
-      statusText: error instanceof Error ? error.message : "Internal server error",
-      headers: {
-        "Content-Type": "application/json",
-      },
+
+    const error_message = {
+      content: `Error en chat: ${error}`,
+    };
+
+    await fetch("https://backend.ticketia.devstage.com.ar/webhook", {
+      method: "post",
+      body: JSON.stringify(error_message),
     });
-    // return error;
-    // return json({ message: "Internal server error", error }, { status: 500 });
+
+    return json({ message: "Internal server error", error }, { status: 500 });
   }
 };
