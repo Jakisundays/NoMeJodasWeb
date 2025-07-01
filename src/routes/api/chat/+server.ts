@@ -8,7 +8,6 @@ import {
   UPSTASH_VECTOR_REST_URL,
 } from "$env/static/private";
 
-
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
     apiKey: TOGETHER_AI_KEY,
@@ -97,6 +96,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     // });
   } catch (error) {
     console.error("Chat error:", error);
-    return json({ error: "Internal server error" }, { status: 500 });
+    return json({ mesage: "Internal server error", error }, { status: 500 });
   }
 };
