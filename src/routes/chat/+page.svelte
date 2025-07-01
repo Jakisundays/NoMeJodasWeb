@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { env } from "$env/dynamic/public";
+  import { PUBLIC_BASE_URL } from "$env/static/public";
   import { Button } from "$lib/components/ui/button";
   import { Input } from "$lib/components/ui/input";
   import {
@@ -329,7 +329,7 @@
                                 </div>
                                 {#if ctx.metadata.articulo}
                                   <a
-                                    href={`${env.PUBLIC_BASE_URL}/constitucion/${ctx.metadata.articulo}`}
+                                    href={`${PUBLIC_BASE_URL}/constitucion/${ctx.metadata.articulo}`}
                                     target="_blank"
                                     class="text-amber-600 mb-1"
                                   >
