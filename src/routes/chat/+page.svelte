@@ -96,14 +96,18 @@
         throw new Error("Failed to send message");
       }
 
+      const data = await response.json();
+
+      console.log({ data });
+
       const {
-        message,
+        message: output,
         context,
-      }: { message: string; context: vectorContext[] } = await response.json();
+      }: { message: string; context: vectorContext[] } = data;
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
-        content: message,
+        content: output,
         role: "assistant",
         timestamp: new Date(),
         context: context, // Agregar contexto al mensaje

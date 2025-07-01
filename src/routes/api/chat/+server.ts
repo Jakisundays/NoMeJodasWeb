@@ -8,11 +8,6 @@ import {
   UPSTASH_VECTOR_REST_URL,
 } from "$env/static/private";
 
-console.log({
-  TOGETHER_AI_KEY: TOGETHER_AI_KEY,
-  UPSTASH_VECTOR_REST_TOKEN: UPSTASH_VECTOR_REST_TOKEN,
-  UPSTASH_VECTOR_REST_URL: UPSTASH_VECTOR_REST_URL,
-});
 
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
