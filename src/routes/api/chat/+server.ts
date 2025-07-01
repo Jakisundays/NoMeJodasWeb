@@ -98,6 +98,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
     console.error("Chat error:", error);
     return new Response(JSON.stringify({ error: JSON.stringify(error) }), {
       status: 500,
+      statusText: JSON.stringify(error),
       headers: {
         "Content-Type": "application/json",
       },
