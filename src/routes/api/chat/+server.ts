@@ -1,20 +1,16 @@
 import { json } from "@sveltejs/kit";
 import { Index } from "@upstash/vector";
-import { RAGChat, togetherai, type OpenAIChatModel } from "@upstash/rag-chat";
+import { RAGChat, togetherai } from "@upstash/rag-chat";
 import type { RequestHandler } from "./$types";
-import {
-  TOGETHER_AI_KEY,
-  UPSTASH_VECTOR_REST_TOKEN,
-  UPSTASH_VECTOR_REST_URL,
-} from "$env/static/private";
+import { env } from "$env/dynamic/private";
 
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
-    apiKey: TOGETHER_AI_KEY,
+    apiKey: env.TOGETHER_AI_KEY,
   }),
   vector: new Index({
-    token: UPSTASH_VECTOR_REST_TOKEN,
-    url: UPSTASH_VECTOR_REST_URL,
+    token: env.UPSTASH_VECTOR_REST_TOKEN,
+    url: env.UPSTASH_VECTOR_REST_URL,
   }),
   promptFn: ({ context, question, chatHistory }) =>
     `Eres Guillermo, un asistente legal panameño entrenado exclusivamente con la Constitución de la República de Panamá.
@@ -66,7 +62,7 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     const { context, output } = response;
 
-    console.log({ context, output, metadata: context[0].metadata });
+    // console.log({ context, output, metadata: context[0].metadata });
 
     return json({ message: output, context });
 
