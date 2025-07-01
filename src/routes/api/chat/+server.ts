@@ -66,15 +66,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   } catch (error) {
     console.error("Chat error:", error);
 
-    const error_message = {
-      content: `Error en chat: ${error}`,
-    };
-
-    await fetch("https://backend.ticketia.devstage.com.ar/webhook", {
-      method: "post",
-      body: JSON.stringify(error_message),
-    });
-
     return json({ message: "Internal server error", error }, { status: 500 });
   }
 };
