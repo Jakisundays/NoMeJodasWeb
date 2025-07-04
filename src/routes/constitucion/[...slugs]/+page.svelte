@@ -17,15 +17,14 @@
     ChevronRight,
     Home,
     BookOpen,
-    ArrowLeft,
     Search,
     Scale,
     Users,
     Zap,
     Heart,
   } from "lucide-svelte";
-  import { goto } from "$app/navigation";
   import { page } from "$app/state";
+  // import { page } from "$app/stores";
 
   type ConstitucionData = typeof constitucionData;
   type TitleData = ConstitucionData[keyof ConstitucionData];
@@ -245,19 +244,27 @@
 </script>
 
 <svelte:head>
-  <title
-    >Constitución de Panamá - {selectedArticle
-      ? selectedArticle
-      : selectedChapter
-        ? selectedChapter
-        : selectedTitle
-          ? selectedTitle
-          : "Inicio"}</title
-  >
+  <title>{page.data.title || "Constitución de Panamá - ACT Panamá"}</title>
   <meta
     name="description"
-    content="Constitución Política de la República de Panamá"
+    content={page.data.description ||
+      "Explora, busca y entiende la Constitución de la República de Panamá. Un recurso accesible para todos los ciudadanos, impulsado por ACT Panamá."}
   />
+  <meta
+    property="og:title"
+    content={page.data.title || "Constitución de Panamá - ACT Panamá"}
+  />
+  <meta
+    property="og:description"
+    content={page.data.description ||
+      "Navega por los títulos, capítulos y artículos de la Constitución panameña. Conoce tus derechos y deberes con esta herramienta de ACT Panamá."}
+  />
+  <meta property="og:image" content="/favicon/android-chrome-512x512.png" />
+  <meta
+    property="og:url"
+    content={`https://actpanama.com/constitucion${page.url.pathname}`}
+  />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <div
