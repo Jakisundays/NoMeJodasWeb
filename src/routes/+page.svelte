@@ -44,7 +44,7 @@
         </Button>
       </a>
       <a
-        href="https://wa.me/50766763481?text=Hola%2C%20quiero%20conocer%20mis%20derechos"
+        href="https://wa.me/50766422876"
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -179,7 +179,7 @@
             Chat Web
           </a>
           <a
-            href="https://wa.me/50766763481"
+            href="https://wa.me/50766422876"
             target="_blank"
             rel="noopener noreferrer"
             class="block text-gray-300 hover:text-white transition-colors"
@@ -193,7 +193,7 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Contacto</h3>
         <a
-          href="https://wa.me/50766763481"
+          href="https://wa.me/50766422876"
           target="_blank"
           rel="noopener noreferrer"
           class="text-green-400 hover:text-green-300 transition-colors flex items-center"
