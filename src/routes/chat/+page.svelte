@@ -144,7 +144,13 @@
 </script>
 
 <svelte:head>
-  <title>Chat ACT Panamá - Acción Ciudadana Transformadora</title>
+  <title>Chat ACT Panamá - Tu Asistente Ciudadano</title>
+  <meta name="description" content="Chatea con el asistente de ACT Panamá para entender tus derechos y la Constitución de forma fácil. Empodérate con conocimiento." />
+  <meta property="og:title" content="Chat ACT Panamá - Tu Asistente Ciudadano" />
+  <meta property="og:description" content="Haz preguntas sobre la Constitución y tus derechos en un lenguaje sencillo. El conocimiento es poder, y el poder es del pueblo." />
+  <meta property="og:image" content="/favicon/android-chrome-512x512.png" />
+  <meta property="og:url" content="https://actpanama.com/chat" />
+  <meta name="twitter:card" content="summary_large_image" />
 </svelte:head>
 
 <div class="flex h-screen bg-gradient-to-br from-slate-50 to-blue-50">

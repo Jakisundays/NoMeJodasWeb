@@ -1,13 +1,17 @@
+<svelte:head>
+  <title>ACT Panamá - Acción Ciudadana Transformadora</title>
+  <meta name="description" content="ACT Panamá: No somos políticos, somos ciudadanos tomando el control. Únete a la transformación con transparencia radical y justicia social." />
+  <meta property="og:title" content="ACT Panamá - Acción Ciudadana Transformadora" />
+  <meta property="og:description" content="No seas un espectador, ACTúa. Participa en la construcción de un nuevo Panamá con herramientas ciudadanas y acceso directo a tus derechos." />
+  <meta property="og:image" content="/favicon/android-chrome-512x512.png" />
+  <meta property="og:url" content="https://actpanama.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+</svelte:head>
+
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
-  import {
-    BookOpen,
-    MessageCircle,
-    Phone,
-    Vote,
-    ExternalLink,
-  } from "lucide-svelte";
+  import { BookOpen, MessageCircle, Phone } from "lucide-svelte";
 </script>
 
 <!-- 1. HERO SECTION -->
