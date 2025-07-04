@@ -1,71 +1,73 @@
 <script lang="ts">
-  import { PUBLIC_BASE_URL } from "$env/static/public";
   import { Button } from "$lib/components/ui/button";
   import { Input } from "$lib/components/ui/input";
-  import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-  } from "$lib/components/ui/card";
   import { ScrollArea } from "$lib/components/ui/scroll-area";
   import { Badge } from "$lib/components/ui/badge";
+  import { Avatar, AvatarFallback } from "$lib/components/ui/avatar/index.js";
   import {
     Send,
-    MessageCircle,
     User,
-    Plus,
     Loader2,
-    ChevronDown,
-    ChevronRight,
-    BookOpen,
-    Heart,
-    Scale,
+    Zap,
+    MessageCircle,
+    FileText,
+    ExternalLink,
   } from "lucide-svelte";
   import { tick } from "svelte";
+  import { marked } from "marked";
 
   interface Message {
     id: string;
     content: string;
     role: "user" | "assistant";
     timestamp: Date;
-    context?: vectorContext[];
-  }
-
-  interface ArticuloMetadata {
-    titulo: string;
-    articulo: string;
-    texto: string;
-    capitulo?: string;
-  }
-  interface vectorContext {
-    data: string;
-    id: string;
-    metadata: ArticuloMetadata;
+    context?: Array<{
+      data: string;
+      metadata: {
+        titulo?: string;
+        articulo?: string;
+        capitulo?: string;
+      };
+    }>;
   }
 
   // Svelte 5 runes for reactive state
   let messages = $state<Message[]>([]);
   let currentMessage = $state("");
   let isLoading = $state(false);
-  let streamingContent = $state("");
-  let contextInput = $state("");
-  let showContextInput = $state(false);
-  let showContextDetails = $state(false);
+  let visibleContexts = $state(new Set<string>());
 
   let messagesContainer: HTMLElement;
-  let messageInput: HTMLInputElement;
+  let scrollAreaRef = $state<HTMLElement | null>(null);
+  let messageInputElement: any;
 
   // Auto-scroll to bottom when new messages arrive
   $effect(() => {
-    if (messages.length > 0 || streamingContent) {
+    if (messages.length > 0) {
       tick().then(() => {
-        if (messagesContainer) {
-          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        if (scrollAreaRef) {
+          const viewport = scrollAreaRef.querySelector(
+            '[data-slot="scroll-area-viewport"]'
+          ) as HTMLElement;
+          if (viewport) {
+            viewport.scrollTo({
+              top: viewport.scrollHeight,
+              behavior: "smooth",
+            });
+          }
         }
       });
     }
   });
+
+  function toggleContextVisibility(messageId: string) {
+    if (visibleContexts.has(messageId)) {
+      visibleContexts.delete(messageId);
+    } else {
+      visibleContexts.add(messageId);
+    }
+    visibleContexts = new Set(visibleContexts);
+  }
 
   async function sendMessage() {
     if (!currentMessage.trim() || isLoading) return;
@@ -81,7 +83,6 @@
     const messageToSend = currentMessage;
     currentMessage = "";
     isLoading = true;
-    streamingContent = "";
 
     try {
       const response = await fetch("/api/chat", {
@@ -93,63 +94,33 @@
       });
 
       if (!response.ok) {
-        console.error({ response });
         throw new Error("Failed to send message");
       }
 
       const data = await response.json();
-
-      console.log({ data });
-
-      const {
-        message: output,
-        context,
-      }: { message: string; context: vectorContext[] } = data;
+      const { message: output, context } = data;
 
       const assistantMessage: Message = {
         id: crypto.randomUUID(),
         content: output,
         role: "assistant",
         timestamp: new Date(),
-        context: context, // Agregar contexto al mensaje
+        context,
       };
 
       messages = [...messages, assistantMessage];
-      streamingContent = "";
     } catch (error) {
       console.error("Error sending message:", error);
       const errorMessage: Message = {
         id: crypto.randomUUID(),
         content:
-          "Sorry, there was an error processing your message. Please try again.",
+          "Disculpa, hubo un error procesando tu mensaje. Por favor intenta de nuevo.",
         role: "assistant",
         timestamp: new Date(),
       };
       messages = [...messages, errorMessage];
     } finally {
       isLoading = false;
-      messageInput?.focus();
-    }
-  }
-
-  async function addContext() {
-    if (!contextInput.trim()) return;
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ context: contextInput }),
-      });
-
-      if (response.ok) {
-        contextInput = "";
-        showContextInput = false;
-      }
-    } catch (error) {
-      console.error("Error adding context:", error);
     }
   }
 
@@ -160,16 +131,8 @@
     }
   }
 
-  function handleContextKeyPress(event: KeyboardEvent) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      addContext();
-    }
-  }
-
   function clearChat() {
     messages = [];
-    streamingContent = "";
   }
 
   function formatTime(date: Date) {
@@ -181,255 +144,296 @@
 </script>
 
 <svelte:head>
-  <title>Guillermo - Tu Asistente Legal Panameño</title>
+  <title>Chat ACT Panamá - Acción Ciudadana Transformadora</title>
 </svelte:head>
 
-<div class="flex h-screen bg-background">
+<div class="flex h-screen bg-gradient-to-br from-slate-50 to-blue-50">
   <div class="flex flex-col w-full max-w-4xl mx-auto">
     <!-- Header -->
-    <div class="border-b bg-card">
-      <div class="flex items-center justify-between p-4">
-        <div class="flex items-center gap-3">
-          <div class="relative">
-            <div
-              class="h-12 w-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg"
+    <div class="border-b bg-white/80 backdrop-blur-sm">
+      <div class="flex items-center justify-between p-4 sm:p-6">
+        <a href="/" class="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+          <Avatar class="h-8 w-8 sm:h-12 sm:w-12 flex-shrink-0">
+            <AvatarFallback
+              class="bg-gradient-to-br from-blue-600 to-purple-600 text-white font-bold text-sm sm:text-lg"
             >
-              <Scale class="h-6 w-6 text-white" />
-            </div>
-            <Heart class="h-4 w-4 text-red-500 absolute -top-1 -right-1" />
-          </div>
-          <div>
-            <h1 class="text-2xl font-bold text-amber-700">
-              ¡Hola! Soy Guillermo
+              ACT
+            </AvatarFallback>
+          </Avatar>
+          <div class="min-w-0 flex-1">
+            <h1
+              class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent truncate"
+            >
+              Chat ACT Panamá
             </h1>
-            <p class="text-sm text-amber-600">
-              Tu amigo que te ayuda con tus derechos 🇵🇦
+            <p
+              class="text-xs sm:text-sm text-slate-600 flex items-center gap-1 truncate"
+            >
+              <Zap class="h-3 w-3 flex-shrink-0" />
+              <span class="truncate">Acción Ciudadana Transformadora</span>
             </p>
           </div>
-        </div>
+        </a>
       </div>
-
-      <!-- Context Input -->
-      {#if showContextInput}
-        <div class="px-4 pb-4">
-          <Card>
-            <CardHeader class="pb-3">
-              <CardTitle class="text-sm text-amber-700"
-                >📚 Enseñarle algo nuevo a Guillermo</CardTitle
-              >
-            </CardHeader>
-            <CardContent class="space-y-3">
-              <Input
-                bind:value={contextInput}
-                placeholder="Cuéntame algo sobre las leyes de Panamá que deba saber..."
-                onkeypress={handleContextKeyPress}
-                class="border-amber-200 focus:border-amber-400"
-              />
-              <div class="flex gap-2">
-                <Button
-                  size="sm"
-                  onclick={addContext}
-                  disabled={!contextInput.trim()}
-                  class="bg-amber-500 hover:bg-amber-600 text-white"
-                >
-                  Enseñarle esto
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onclick={() => (showContextInput = false)}
-                  class="border-amber-300 text-amber-700 hover:bg-amber-50"
-                >
-                  Mejor no
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      {/if}
     </div>
 
     <!-- Messages Area -->
     <div class="flex-1 overflow-hidden">
-      <ScrollArea class="h-full">
-        <div bind:this={messagesContainer} class="p-4 space-y-4">
+      <ScrollArea bind:ref={scrollAreaRef} class="h-full">
+        <div
+          bind:this={messagesContainer}
+          class="p-2 sm:p-4 space-y-2 sm:space-y-3 chat-messages"
+        >
           {#if messages.length === 0}
-            <div class="text-center py-12">
-              <div
-                class="h-16 w-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
-              >
-                <MessageCircle class="h-8 w-8 text-white" />
+            <div class="text-center py-6 sm:py-10 px-4">
+              <!-- Versión móvil simplificada -->
+              <div class="block sm:hidden">
+                <div class="flex justify-center mb-4">
+                  <div
+                    class="bg-gradient-to-br from-blue-600 to-purple-600 rounded-full p-3"
+                  >
+                    <Zap class="h-6 w-6 text-white" />
+                  </div>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 mb-3">
+                  Chat ACT Panamá
+                </h3>
+                <p class="text-sm text-slate-600 mb-4">
+                  Tu asistente para entender tus derechos constitucionales
+                </p>
+                <div
+                  class="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-slate-200"
+                >
+                  <p class="text-xs text-slate-600 mb-2 font-medium">
+                    Pregunta algo como:
+                  </p>
+                  <p class="text-xs text-slate-700">
+                    "¿Cuáles son mis derechos fundamentales?"
+                  </p>
+                </div>
               </div>
-              <h3 class="text-xl font-bold text-amber-700 mb-2">
-                ¡Qué tal! 👋
-              </h3>
-              <p class="text-amber-600 max-w-md mx-auto leading-relaxed">
-                Soy Guillermo, tu amigo panameño que te ayuda a entender tus
-                derechos. Pregúntame lo que quieras sobre las leyes de nuestro
-                país. ¡Hablemos como panas! 🇵🇦
-              </p>
+
+              <!-- Versión desktop completa -->
+              <div class="hidden sm:block">
+                <div class="relative mx-auto mb-4">
+                  <div
+                    class="h-20 w-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto shadow-xl"
+                  >
+                    <Zap class="h-10 w-10 text-white" />
+                  </div>
+                  <div
+                    class="absolute -bottom-2 -right-2 h-8 w-8 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center"
+                  >
+                    <User class="h-4 w-4 text-white" />
+                  </div>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-3">
+                  🤖 ¿Qué hace el bot de ACT Panamá?
+                </h3>
+                <div class="max-w-2xl mx-auto space-y-4">
+                  <p class="text-base text-slate-600 leading-relaxed">
+                    El bot de ACT es tu <strong
+                      >asistente legal ciudadano</strong
+                    >. Te ayuda a entender tus derechos según la Constitución de
+                    Panamá, sin palabras complicadas, sin vueltas, y sin que te
+                    metan cuentos.
+                  </p>
+
+                  <div
+                    class="bg-white/60 backdrop-blur-sm rounded-lg p-6 border border-slate-200 mb-6"
+                  >
+                    <h4 class="font-semibold text-slate-800 mb-4">
+                      Puedes hacerle preguntas como:
+                    </h4>
+                    <div class="space-y-2 text-left">
+                      <p class="text-slate-700">
+                        • ¿La policía me puede revisar sin razón?
+                      </p>
+                      <p class="text-slate-700">
+                        • ¿Qué dice la ley sobre libertad de expresión?
+                      </p>
+                      <p class="text-slate-700">
+                        • ¿Cuáles son mis derechos si me detienen?
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                    <div
+                      class="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-slate-200"
+                    >
+                      <div class="text-2xl mb-2">💬</div>
+                      <h4 class="font-semibold text-slate-800">
+                        Explicaciones fáciles
+                      </h4>
+                      <p class="text-sm text-slate-600">
+                        Te responde con explicaciones fáciles de entender
+                      </p>
+                    </div>
+                    <div
+                      class="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-slate-200"
+                    >
+                      <div class="text-2xl mb-2">📄</div>
+                      <h4 class="font-semibold text-slate-800">
+                        Citas directas
+                      </h4>
+                      <p class="text-sm text-slate-600">
+                        Cita directamente los artículos de la Constitución
+                      </p>
+                    </div>
+                    <div
+                      class="bg-white/60 backdrop-blur-sm rounded-lg p-4 border border-slate-200"
+                    >
+                      <div class="text-2xl mb-2">🔗</div>
+                      <h4 class="font-semibold text-slate-800">
+                        Links directos
+                      </h4>
+                      <p class="text-sm text-slate-600">
+                        Te manda un link directo para leer la ley completa
+                      </p>
+                    </div>
+                  </div>
+
+                  <p class="text-slate-500 text-sm mt-4">
+                    Además, lo puedes usar desde la web o por WhatsApp, pa' que
+                    lo tengas siempre a mano 💬
+                  </p>
+                </div>
+              </div>
             </div>
           {/if}
 
           {#each messages as message (message.id)}
             <div
-              class="flex gap-3 {message.role === 'user'
+              class="flex gap-2 sm:gap-4 {message.role === 'user'
                 ? 'justify-end'
                 : 'justify-start'}"
             >
               {#if message.role === "assistant"}
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
+                <Avatar class="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
+                  <AvatarFallback
+                    class="bg-gradient-to-br from-blue-600 to-purple-600 text-white text-xs font-semibold"
                   >
-                    <Scale class="h-4 w-4 text-white" />
-                  </div>
-                </div>
+                    ACT
+                  </AvatarFallback>
+                </Avatar>
               {/if}
 
               <div
-                class="flex flex-col max-w-[80%] {message.role === 'user'
+                class="flex flex-col max-w-[85%] sm:max-w-[75%] {message.role ===
+                'user'
                   ? 'items-end'
                   : 'items-start'}"
               >
-                <Card
+                <div
                   class={message.role === "user"
-                    ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
-                    : "bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 shadow-sm"}
+                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl rounded-br-md px-3 py-2 sm:px-4 sm:py-3 shadow-sm"
+                    : "bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl rounded-bl-md px-3 py-2 sm:px-4 sm:py-3 shadow-sm"}
                 >
-                  <CardContent class="p-3">
-                    <p
-                      class="text-sm whitespace-pre-wrap {message.role ===
-                      'assistant'
-                        ? 'text-amber-800'
-                        : 'text-white'}"
+                  <div
+                    class="text-xs sm:text-sm leading-relaxed {message.role ===
+                    'assistant'
+                      ? 'text-slate-800'
+                      : 'text-white'} prose prose-xs sm:prose-sm max-w-none"
+                  >
+                    {@html marked(message.content)}
+                  </div>
+
+                  {#if message.role === "assistant" && message.context && message.context.length > 0}
+                    <button
+                      onclick={() => toggleContextVisibility(message.id)}
+                      class="mt-3 text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
                     >
-                      {message.content}
-                    </p>
+                      <FileText class="h-3 w-3" />
+                      {visibleContexts.has(message.id)
+                        ? "Ocultar fuentes"
+                        : `Ver fuentes (${message.context.length})`}
+                    </button>
 
-                    <!-- Mostrar contexto si existe -->
-                    {#if message.context && message.context.length > 0}
-                      <div class="mt-3 border-t pt-3">
-                        <button
-                          class="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                          onclick={() =>
-                            (showContextDetails = !showContextDetails)}
-                        >
-                          {#if showContextDetails}
-                            <ChevronDown class="h-3 w-3" />
-                          {:else}
-                            <ChevronRight class="h-3 w-3" />
-                          {/if}
-                          <BookOpen class="h-3 w-3" />
-                          Ver de dónde saqué esta info ({message.context.length}
-                          fuentes)
-                        </button>
-
-                        {#if showContextDetails}
-                          <div class="mt-2 space-y-2">
-                            {#each message.context as ctx, index}
-                              <div class="bg-background/50 rounded p-2 text-xs">
-                                <div class="font-medium text-amber-800 mb-1">
-                                  {ctx.metadata.titulo || `Info ${index + 1}`}
-                                </div>
-                                {#if ctx.metadata.articulo}
-                                  <a
-                                    href={`${PUBLIC_BASE_URL}/constitucion/${ctx.metadata.articulo}`}
-                                    target="_blank"
-                                    class="text-amber-600 mb-1"
-                                  >
-                                    📄 Artículo {ctx.metadata.articulo}
-                                  </a>
-                                {/if}
-                                {#if ctx.metadata.capitulo}
-                                  <div class="text-amber-600 mb-1">
-                                    📖 {ctx.metadata.capitulo}
-                                  </div>
-                                {/if}
-                                <div class="text-muted-foreground line-clamp-3">
-                                  {ctx.data.substring(0, 200)}...
-                                </div>
+                    {#if visibleContexts.has(message.id)}
+                      <div class="mt-2 space-y-2">
+                        {#each message.context as ctx, index}
+                          <div
+                            class="bg-slate-50 rounded p-3 text-xs border border-slate-200"
+                          >
+                            <div class="font-medium text-blue-800 mb-1">
+                              {ctx.metadata.titulo || `Fuente ${index + 1}`}
+                            </div>
+                            {#if ctx.metadata.articulo}
+                              <a
+                                href={`/constitucion/${ctx.metadata.articulo}`}
+                                target="_blank"
+                                class="text-blue-600 hover:text-blue-800 mb-1 flex items-center gap-1"
+                              >
+                                <ExternalLink class="h-3 w-3" />
+                                📄 Artículo {ctx.metadata.articulo}
+                              </a>
+                            {/if}
+                            {#if ctx.metadata.capitulo}
+                              <div class="text-blue-600 mb-1">
+                                📖 {ctx.metadata.capitulo}
                               </div>
-                            {/each}
+                            {/if}
+                            <div class="text-slate-600 line-clamp-3">
+                              {ctx.data.substring(0, 200)}...
+                            </div>
                           </div>
-                        {/if}
+                        {/each}
                       </div>
                     {/if}
-                  </CardContent>
-                </Card>
-                <div class="flex items-center gap-2 mt-1">
-                  <Badge variant="secondary" class="text-xs">
-                    {formatTime(message.timestamp)}
-                  </Badge>
-                  {#if message.context && message.context.length > 0}
-                    <Badge
-                      variant="outline"
-                      class="text-xs border-amber-300 text-amber-700"
-                    >
-                      📚 {message.context.length} referencias
-                    </Badge>
                   {/if}
                 </div>
+                <Badge
+                  variant="secondary"
+                  class="text-xs mt-2 bg-slate-100 text-slate-500"
+                >
+                  {formatTime(message.timestamp)}
+                </Badge>
               </div>
 
               {#if message.role === "user"}
-                <div class="flex-shrink-0">
-                  <div
-                    class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center"
-                  >
-                    <User class="h-4 w-4" />
-                  </div>
-                </div>
+                <Avatar class="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
+                  <AvatarFallback class="bg-slate-200 text-slate-600">
+                    <User class="h-3 w-3 sm:h-4 sm:w-4" />
+                  </AvatarFallback>
+                </Avatar>
               {/if}
             </div>
           {/each}
 
-          <!-- Streaming Message -->
-          {#if streamingContent}
-            <div class="flex gap-3 justify-start">
-              <div class="flex-shrink-0">
-                <div
-                  class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
-                >
-                  <Scale class="h-4 w-4 text-white" />
-                </div>
-              </div>
-              <div class="flex flex-col max-w-[80%] items-start">
-                <Card
-                  class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
-                >
-                  <CardContent class="p-3">
-                    <p class="text-sm whitespace-pre-wrap text-amber-800">
-                      {streamingContent}<span
-                        class="animate-pulse text-amber-500">|</span
-                      >
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-          {/if}
-
           <!-- Loading Indicator -->
-          {#if isLoading && !streamingContent}
-            <div class="flex gap-3 justify-start">
-              <div class="flex-shrink-0">
+          {#if isLoading}
+            <div class="flex gap-2 sm:gap-4 justify-start">
+              <Avatar class="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0">
+                <AvatarFallback
+                  class="bg-gradient-to-br from-blue-600 to-purple-600 text-white text-xs font-semibold"
+                >
+                  <Loader2 class="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                </AvatarFallback>
+              </Avatar>
+              <div class="flex flex-col max-w-[85%] sm:max-w-[75%] items-start">
                 <div
-                  class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-md"
+                  class="bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm"
                 >
-                  <Loader2 class="h-4 w-4 text-white animate-spin" />
+                  <div class="flex items-center gap-2">
+                    <div class="flex space-x-1">
+                      <div
+                        class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                      ></div>
+                      <div
+                        class="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                        style="animation-delay: 0.1s"
+                      ></div>
+                      <div
+                        class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
+                        style="animation-delay: 0.2s"
+                      ></div>
+                    </div>
+                    <span class="text-sm text-slate-600"
+                      >ACT está escribiendo...</span
+                    >
+                  </div>
                 </div>
-              </div>
-              <div class="flex flex-col max-w-[80%] items-start">
-                <Card
-                  class="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200"
-                >
-                  <CardContent class="p-3">
-                    <p class="text-sm text-amber-600">
-                      Déjame pensar un chin... 🤔
-                    </p>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           {/if}
@@ -438,28 +442,37 @@
     </div>
 
     <!-- Input Area -->
-    <div class="border-t bg-card p-4">
-      <div class="flex gap-2">
-        <input
-          bind:this={messageInput}
-          bind:value={currentMessage}
-          placeholder="Pregúntame sobre tus derechos, pana... 💬"
-          onkeypress={handleKeyPress}
-          disabled={isLoading}
-          class="flex-1 flex h-9 w-full rounded-md border border-amber-200 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-amber-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
-        />
-        <Button
-          onclick={sendMessage}
-          disabled={!currentMessage.trim() || isLoading}
-          size="icon"
-          class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-md"
-        >
-          {#if isLoading}
-            <Loader2 class="h-4 w-4 animate-spin" />
-          {:else}
-            <Send class="h-4 w-4" />
-          {/if}
-        </Button>
+    <div class="border-t bg-white/80 backdrop-blur-sm p-3 sm:p-6">
+      <div class="max-w-3xl mx-auto">
+        <div class="flex gap-2 sm:gap-3 items-end">
+          <div class="flex-1 relative">
+            <Input
+              bind:this={messageInputElement}
+              bind:value={currentMessage}
+              placeholder="Pregúntame sobre tus derechos constitucionales..."
+              onkeypress={handleKeyPress}
+              disabled={isLoading}
+              class="min-h-[40px] sm:min-h-[48px] pr-10 sm:pr-12 text-sm border-slate-200 focus:border-blue-500 focus:ring-blue-500 rounded-xl bg-white/90 backdrop-blur-sm shadow-sm resize-none"
+            />
+            <div class="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2">
+              <Button
+                onclick={sendMessage}
+                disabled={!currentMessage.trim() || isLoading}
+                size="sm"
+                class="h-7 w-7 sm:h-8 sm:w-8 p-0 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm rounded-lg"
+              >
+                {#if isLoading}
+                  <Loader2 class="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+                {:else}
+                  <Send class="h-3 w-3 sm:h-4 sm:w-4" />
+                {/if}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-2 text-center px-2">
+          ACT Panamá puede cometer errores. Verifica información importante.
+        </p>
       </div>
     </div>
   </div>

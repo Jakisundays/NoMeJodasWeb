@@ -16,14 +16,14 @@
     <h1
       class="text-5xl sm:text-7xl font-bold tracking-tight text-gray-900 mb-6"
     >
-      Unidos para arreglar Panamá.
-      <span class="block text-blue-600">No esperes al gobierno: ACTúa.</span>
+      Acción Ciudadana Transformadora.
+      <span class="block text-blue-600">No seas espectador, ACTúa.</span>
     </h1>
     <h2
       class="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed"
     >
-      Una plataforma ciudadana para organizarnos, conocer nuestros derechos y
-      exigir cambios reales.
+      Nos cansamos del cuento. Esto no es política como siempre. Es el pueblo
+      tomando el control.
     </h2>
 
     <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -67,11 +67,11 @@
     <div class="space-y-6">
       <div class="text-6xl mb-8">🇵🇦</div>
       <div class="text-2xl sm:text-3xl font-semibold text-gray-900 space-y-4">
-        <p>Somos un movimiento ciudadano.</p>
-        <p>Estamos cansados de esperar.</p>
+        <p>No somos izquierda ni derecha.</p>
+        <p>No somos los mismos de siempre.</p>
         <p class="text-blue-600">
-          ACT Panamá te da acceso directo a tus derechos y te ayuda a
-          organizarte para hacer presión donde importa.
+          Somos una generación decidida a hacer historia con transparencia
+          radical y justicia social para todxs.
         </p>
       </div>
     </div>
@@ -82,7 +82,7 @@
 <section class="py-20 bg-white">
   <div class="container mx-auto px-4">
     <h2 class="text-4xl font-bold text-center text-gray-900 mb-16">
-      Herramientas Disponibles
+      Herramientas para la Transformación
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -92,10 +92,11 @@
         <Card.Content class="space-y-4">
           <div class="text-6xl mb-4">📘</div>
           <Card.Title class="text-2xl font-semibold text-gray-900"
-            >Constitución en línea</Card.Title
+            >Constitución Accesible</Card.Title
           >
           <Card.Description class="text-gray-600 text-lg">
-            Consulta rápida y simple desde cualquier dispositivo.
+            Conoce tus derechos fundamentales. El poder no se hereda, se
+            recupera.
           </Card.Description>
         </Card.Content>
       </Card.Root>
@@ -106,11 +107,11 @@
         <Card.Content class="space-y-4">
           <div class="text-6xl mb-4">🤖</div>
           <Card.Title class="text-2xl font-semibold text-gray-900"
-            >Chat Web</Card.Title
+            >Asistente Ciudadano</Card.Title
           >
           <Card.Description class="text-gray-600 text-lg">
-            Un bot que te explica tus derechos con base en la Constitución. Sin
-            tecnicismos.
+            Entiende tus derechos sin tecnicismos. Educación como base del
+            desarrollo real.
           </Card.Description>
         </Card.Content>
       </Card.Root>
@@ -121,11 +122,11 @@
         <Card.Content class="space-y-4">
           <div class="text-6xl mb-4">💬</div>
           <Card.Title class="text-2xl font-semibold text-gray-900"
-            >Bot de WhatsApp</Card.Title
+            >WhatsApp Activado</Card.Title
           >
           <Card.Description class="text-gray-600 text-lg">
-            Pregunta lo que quieras sobre tus derechos directamente desde tu
-            celular.
+            Acceso directo a tus derechos desde tu celular. Somos Panamá
+            activado.
           </Card.Description>
         </Card.Content>
       </Card.Root>
@@ -138,10 +139,13 @@
   <div class="container mx-auto px-4 text-center max-w-4xl">
     <div class="space-y-8">
       <div class="text-8xl mb-8">🗳️</div>
-      <h2 class="text-4xl font-bold text-gray-900 mb-6">Vota con tu voz</h2>
+      <h2 class="text-4xl font-bold text-gray-900 mb-6">
+        Participa en la Transformación
+      </h2>
       <p class="text-xl text-gray-700 mb-8 leading-relaxed">
-        Muy pronto podrás opinar sobre los temas que más te importan.<br />
-        Queremos construir esta plataforma contigo.
+        Muy pronto podrás participar activamente en las decisiones que afectan
+        tu vida.<br />
+        No venimos a ocupar cargos, venimos a transformar el sistema.
       </p>
       <Button
         size="lg"
@@ -203,7 +207,8 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Acerca de</h3>
         <p class="text-gray-300 text-sm leading-relaxed">
-          No somos parte del gobierno. Esta es una iniciativa ciudadana.
+          Movimiento político ciudadano independiente. Una nueva cultura
+          política: más ética, más abierta, más humana.
         </p>
       </div>
     </div>
