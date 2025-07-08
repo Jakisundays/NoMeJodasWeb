@@ -68,6 +68,6 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
   } catch (error) {
     console.error("Chat error:", error);
 
-    return json({ message: "Internal server error", error }, { status: 500 });
+    return json({ message: JSON.stringify(error), error }, { status: 500 });
   }
 };
