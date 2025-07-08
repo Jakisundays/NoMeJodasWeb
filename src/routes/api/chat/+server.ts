@@ -62,14 +62,10 @@ export const POST: RequestHandler = async ({ request, fetch }) => {
 
     const { context, output } = response;
 
-    // console.log({ context, output, metadata: context[0].metadata });
-
     return json({ message: output, context });
   } catch (error) {
     console.error("Chat error:", error);
 
-    console.log({TOGETHER_AI_KEY,UPSTASH_VECTOR_REST_TOKEN, UPSTASH_VECTOR_REST_URL})
-
-    return json({ message: JSON.stringify(error), error }, { status: 500 });
+    return json({ message: "Internal server error", error }, { status: 500 });
   }
 };

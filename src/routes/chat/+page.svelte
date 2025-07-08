@@ -92,12 +92,11 @@
         body: JSON.stringify({ message: messageToSend }),
       });
 
-      // if (!response.ok) {
-      //   throw new Error("Failed to send message");
-      // }
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
 
       const data = await response.json();
-      console.log({ data });
       const { message: output, context } = data;
 
       const assistantMessage: Message = {
