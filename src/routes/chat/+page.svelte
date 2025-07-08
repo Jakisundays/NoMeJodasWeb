@@ -9,7 +9,6 @@
     User,
     Loader2,
     Zap,
-    MessageCircle,
     FileText,
     ExternalLink,
   } from "lucide-svelte";
@@ -93,9 +92,9 @@
         body: JSON.stringify({ message: messageToSend }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
+      // if (!response.ok) {
+      //   throw new Error("Failed to send message");
+      // }
 
       const data = await response.json();
       const { message: output, context } = data;

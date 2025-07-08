@@ -11,7 +11,6 @@ import {
 const ragChat = new RAGChat({
   model: togetherai("deepseek-ai/DeepSeek-V3", {
     apiKey: TOGETHER_AI_KEY,
-    openAIApiKey: TOGETHER_AI_KEY,
   }),
   vector: new Index({
     token: UPSTASH_VECTOR_REST_TOKEN,
