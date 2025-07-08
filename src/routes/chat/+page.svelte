@@ -11,6 +11,7 @@
     Zap,
     FileText,
     ExternalLink,
+    Heart,
   } from "lucide-svelte";
   import { tick } from "svelte";
   import { marked } from "marked";
@@ -187,6 +188,21 @@
               <span class="truncate">Acción Ciudadana Transformadora</span>
             </p>
           </div>
+        </a>
+        <a
+          href="https://apps.yappy.com.pa?hash=UOPGue3yMEQIJojeMXVW0TOy1w%2B4LfBBSVRWPO6ZETY%3D&key=C8hilq3a7gspEHCMmmcNCBdLI9NXgVm4RJDH-onEsOA%3D"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button
+            size="sm"
+            variant="outline"
+            class="border-blue-300 text-blue-700 hover:bg-blue-50 flex-shrink-0"
+          >
+            <Heart class="mr-1 h-3 w-3 sm:h-4 sm:w-4" />
+            <span class="hidden sm:inline">Donar</span>
+            <span class="sm:hidden">💝</span>
+          </Button>
         </a>
       </div>
     </div>

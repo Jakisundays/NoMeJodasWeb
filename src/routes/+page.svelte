@@ -1,18 +1,27 @@
-<svelte:head>
-  <title>ACT Panamá - Acción Ciudadana Transformadora</title>
-  <meta name="description" content="ACT Panamá: No somos políticos, somos ciudadanos tomando el control. Únete a la transformación con transparencia radical y justicia social." />
-  <meta property="og:title" content="ACT Panamá - Acción Ciudadana Transformadora" />
-  <meta property="og:description" content="No seas un espectador, ACTúa. Participa en la construcción de un nuevo Panamá con herramientas ciudadanas y acceso directo a tus derechos." />
-  <meta property="og:image" content="/favicon/android-chrome-512x512.png" />
-  <meta property="og:url" content="https://actpanama.com" />
-  <meta name="twitter:card" content="summary_large_image" />
-</svelte:head>
-
 <script lang="ts">
   import * as Card from "$lib/components/ui/card";
   import { Button } from "$lib/components/ui/button";
   import { BookOpen, MessageCircle, Phone } from "lucide-svelte";
 </script>
+
+<svelte:head>
+  <title>ACT Panamá - Acción Ciudadana Transformadora</title>
+  <meta
+    name="description"
+    content="ACT Panamá: No somos políticos, somos ciudadanos tomando el control. Únete a la transformación con transparencia radical y justicia social."
+  />
+  <meta
+    property="og:title"
+    content="ACT Panamá - Acción Ciudadana Transformadora"
+  />
+  <meta
+    property="og:description"
+    content="No seas un espectador, ACTúa. Participa en la construcción de un nuevo Panamá con herramientas ciudadanas y acceso directo a tus derechos."
+  />
+  <meta property="og:image" content="/favicon/android-chrome-512x512.png" />
+  <meta property="og:url" content="https://actpanama.com" />
+  <meta name="twitter:card" content="summary_large_image" />
+</svelte:head>
 
 <!-- 1. HERO SECTION -->
 <section class="min-h-screen bg-white flex items-center justify-center px-4">
@@ -151,13 +160,13 @@
         tu vida.<br />
         No venimos a ocupar cargos, venimos a transformar el sistema.
       </p>
-      <Button
+      <!-- <Button
         size="lg"
         variant="outline"
         class="border-blue-300 text-blue-700 hover:bg-blue-50"
       >
         Avísame cuando esté listo
-      </Button>
+      </Button> -->
     </div>
   </div>
 </section>
@@ -196,15 +205,30 @@
       <!-- Contacto -->
       <div>
         <h3 class="text-lg font-semibold mb-4">Contacto</h3>
-        <a
-          href="https://wa.me/50766422876"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-green-400 hover:text-green-300 transition-colors flex items-center"
-        >
-          <Phone class="mr-2 h-4 w-4" />
-          WhatsApp
-        </a>
+        <div class="space-y-2">
+          <a
+            href="https://wa.me/50766422876"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-green-400 hover:text-green-300 transition-colors flex items-center"
+          >
+            <Phone class="mr-2 h-4 w-4" />
+            WhatsApp
+          </a>
+          <a
+            href="https://apps.yappy.com.pa?hash=UOPGue3yMEQIJojeMXVW0TOy1w%2B4LfBBSVRWPO6ZETY%3D&key=C8hilq3a7gspEHCMmmcNCBdLI9NXgVm4RJDH-onEsOA%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-blue-400 hover:text-blue-300 transition-colors flex items-center"
+          >
+            <svg class="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+              />
+            </svg>
+            Donar con Yappy
+          </a>
+        </div>
       </div>
 
       <!-- Disclaimer -->

@@ -322,6 +322,20 @@
             <Home class="h-4 w-4" />
             <span class="hidden sm:inline ml-1">Inicio</span>
           </Button>
+          <a
+            href="https://apps.yappy.com.pa?hash=UOPGue3yMEQIJojeMXVW0TOy1w%2B4LfBBSVRWPO6ZETY%3D&key=C8hilq3a7gspEHCMmmcNCBdLI9NXgVm4RJDH-onEsOA%3D"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button
+              variant="outline"
+              size="sm"
+              class="border-blue-300 text-blue-700 hover:bg-blue-50 p-2"
+            >
+              <Heart class="h-4 w-4" />
+              <span class="hidden sm:inline ml-1">Donar</span>
+            </Button>
+          </a>
         </nav>
       </div>
     </div>
