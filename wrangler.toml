@@ -1,4 +1,4 @@
-name = "ACT-Panama-web"
+name = "act-panama-web"
 compatibility_flags = ["nodejs_compat", "cache_option_enabled"]
 compatibility_date = "2024-09-23"
 pages_build_output_dir = "build"
